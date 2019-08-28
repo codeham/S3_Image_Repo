@@ -25,11 +25,6 @@ public class BucketController {
         return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
     }
 
-    @PostMapping("/testPost")
-    public String testPost(@RequestParam String text){
-        return "Test Post Success ! " + text;
-    }
-
     @GetMapping("/getTest")
     public String getTest(){
         return "HELLO WORLD !";

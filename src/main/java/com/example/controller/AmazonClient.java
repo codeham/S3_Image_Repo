@@ -1,13 +1,17 @@
 package com.example.controller;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -39,17 +43,11 @@ public class AmazonClient {
     @Value("${amazonProperties.bucketName}")
     private String bucketName;
 
-    @Value("${amazonProperties.regionName}")
-    private String regionName;
-
     @PostConstruct
     private void initializeAmazon(){
-        System.out.println("access key is: " + this.accessKey);
-        System.out.println("secret key is: " + this.secretKey);
-
         AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
         s3Client = AmazonS3ClientBuilder.standard()
-                .withRegion(regionName)
+                .withRegion(Regions.US_WEST_1)
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .build();
     }
@@ -69,7 +67,17 @@ public class AmazonClient {
     }
 
     private void uploadFileTos3bucket(String fileName, File file){
-        s3Client.putObject(new PutObjectRequest(bucketName, fileName, file).withCannedAcl(CannedAccessControlList.PublicRead));
+        try{
+            PutObjectRequest request = new PutObjectRequest(bucketName, fileName, file);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("multipart/form-data");
+            request.setMetadata(metadata);
+            s3Client.putObject(request);
+        }catch(AmazonServiceException e){
+            e.printStackTrace();
+        }catch(SdkClientException e){
+            e.printStackTrace();
+        }
     }
 
     public String uploadFile(MultipartFile multipartFile){
