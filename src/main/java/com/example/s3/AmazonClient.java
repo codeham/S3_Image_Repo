@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.s3;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
@@ -7,12 +7,12 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.image_processing.MetadataExtract;
+import org.apache.commons.imaging.ImageReadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -68,6 +68,8 @@ public class AmazonClient {
 
     private void uploadFileTos3bucket(String fileName, File file){
         try{
+            MetadataExtract metadataExtract = new MetadataExtract();
+            metadataExtract.metadataExample(file);
             PutObjectRequest request = new PutObjectRequest(bucketName, fileName, file);
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("multipart/form-data");
@@ -76,6 +78,10 @@ public class AmazonClient {
         }catch(AmazonServiceException e){
             e.printStackTrace();
         }catch(SdkClientException e){
+            e.printStackTrace();
+        } catch (ImageReadException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
