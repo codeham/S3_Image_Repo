@@ -15,6 +15,11 @@ public class BucketController {
         this.amazonClient = amazonClient;
     }
 
+    @RequestMapping("/")
+    public String index(){
+        return "index.html";
+    }
+
     @PostMapping("/uploadFile")
     public String uploadFile(@RequestPart(value = "file") MultipartFile file){
         return this.amazonClient.uploadFile(file);
@@ -27,6 +32,6 @@ public class BucketController {
 
     @GetMapping("/getTest")
     public String getTest(){
-        return "HELLO WORLD !";
+        return "HELLO WORLD, CRISTIAN !";
     }
 }
