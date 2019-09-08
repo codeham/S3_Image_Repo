@@ -13,6 +13,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.image_processing.MetadataExtract;
 import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.common.ImageMetadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,9 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Service
@@ -68,8 +71,6 @@ public class AmazonClient {
 
     private void uploadFileTos3bucket(String fileName, File file){
         try{
-            MetadataExtract metadataExtract = new MetadataExtract();
-            metadataExtract.metadataExample(file);
             PutObjectRequest request = new PutObjectRequest(bucketName, fileName, file);
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("multipart/form-data");
@@ -79,18 +80,17 @@ public class AmazonClient {
             e.printStackTrace();
         }catch(SdkClientException e){
             e.printStackTrace();
-        } catch (ImageReadException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    public String uploadFile(MultipartFile multipartFile){
+    public List<String> uploadFile(MultipartFile multipartFile){
 
         String fileUrl = "";
+        List<String> metaData = null;
         try{
             File file = convertMultiPartFile(multipartFile);
+            MetadataExtract metadataExtract = new MetadataExtract();
+            metaData = metadataExtract.metadataExample(file);
             String fileName = generateFileName(multipartFile);
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
             uploadFileTos3bucket(fileName, file);
@@ -98,7 +98,7 @@ public class AmazonClient {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return fileUrl;
+        return metaData;
     }
 
     public String deleteFileFromS3Bucket(String fileUrl) {
