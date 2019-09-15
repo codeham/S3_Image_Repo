@@ -1,10 +1,12 @@
 package com.example.s3;
 
+import org.apache.commons.imaging.common.ImageMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/storage")
@@ -23,7 +25,7 @@ public class BucketController {
     }
 
     @PostMapping("/uploadFile")
-    public List<String> uploadFile(@RequestPart(value = "file") MultipartFile file){
+    public Map<String, String> uploadFile(@RequestPart(value = "file") MultipartFile file){
         return this.amazonClient.uploadFile(file);
     }
 

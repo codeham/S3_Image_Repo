@@ -1,5 +1,7 @@
 $(document).ready(function () {
     console.log("HELLO FROM JQUERY !")
+    // hide success alert
+    $('alert').hide();
 
     $('#image-file').change(function(event){
         console.log('loadFile() was triggered by change event')
@@ -41,8 +43,7 @@ $(document).ready(function () {
                 console.log("Success !");
                 console.log(response);
                 // show in front end
-                console.log(typeof(response))
-                 $('#json-data-output').append('<p>' + 'JSON Response: ' + '</p>');
+                $('#json-data-output').append('<p>' + 'JSON Response: ' + '</p>');
                 $('#json-data-output').append(JSON.stringify(response, null, 2));
                 $('#submit-button').prop("disabled", false);
             },

@@ -23,9 +23,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -83,10 +81,10 @@ public class AmazonClient {
         }
     }
 
-    public List<String> uploadFile(MultipartFile multipartFile){
+    public Map<String, String> uploadFile(MultipartFile multipartFile){
 
         String fileUrl = "";
-        List<String> metaData = null;
+        Map<String, String> metaData = new HashMap<>();
         try{
             File file = convertMultiPartFile(multipartFile);
             MetadataExtract metadataExtract = new MetadataExtract();
