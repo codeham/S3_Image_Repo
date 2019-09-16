@@ -84,10 +84,11 @@ public class AmazonClient {
     public Map<String, String> uploadFile(MultipartFile multipartFile){
 
         String fileUrl = "";
-        Map<String, String> metaData = new HashMap<>();
+        Map<String, String> metaData = null;
         try{
             File file = convertMultiPartFile(multipartFile);
             MetadataExtract metadataExtract = new MetadataExtract();
+            metaData = new HashMap<>();
             metaData = metadataExtract.metadataExample(file);
             String fileName = generateFileName(multipartFile);
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
@@ -95,6 +96,7 @@ public class AmazonClient {
             file.delete();
         }catch (Exception e){
             e.printStackTrace();
+            return null;
         }
         return metaData;
     }

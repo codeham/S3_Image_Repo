@@ -4,6 +4,8 @@ $(document).ready(function () {
     $('alert').hide();
 
     $('#image-file').change(function(event){
+        $('#json-response').empty();
+        $('#json').empty();
         console.log('loadFile() was triggered by change event')
         var output = document.getElementById('output');
         objectURL = URL.createObjectURL(event.target.files[0]);
@@ -16,7 +18,7 @@ $(document).ready(function () {
         event.preventDefault();
 
         // empty json text from prev post
-        $('#json-data-output').empty();
+        $('#json').empty();
 
         // grab file
         let photoFile = document.getElementById('image-file').files[0];
@@ -43,12 +45,14 @@ $(document).ready(function () {
                 console.log("Success !");
                 console.log(response);
                 // show in front end
-                $('#json-data-output').append('<p>' + 'JSON Response: ' + '</p>');
-                $('#json-data-output').append(JSON.stringify(response, null, 2));
+                $('#json-response').html('<p>' + 'JSON Response ' + "<span class='dot dot-sm dot-success'></span>" + '</p>')
+                $('#json').html(JSON.stringify(response, null, 2));
                 $('#submit-button').prop("disabled", false);
             },
             error: function(response){
                 console.log("Error");
+                $('#json-response').html('<p>' + 'JSON Response ' + "<span class='dot dot-sm dot-danger'></span>" + '</p>')
+                $('#json').html('Whoops ! an error occured, check file format');
                 $('#submit-button').prop("disabled", false);
             }
         })

@@ -25,9 +25,6 @@ public class MetadataExtract {
             final ImageMetadataItem item = items.get(i);
             String[] keyValue = splitItemIntoKeyValue(item);
             itemMap.put(keyValue[0], keyValue[1]);
-
-//            metaDataList.add(item.toString());
-//            System.out.println(item.toString());
         }
         return itemMap;
     }
@@ -40,8 +37,7 @@ public class MetadataExtract {
 
         keyValue[0] = itemKey;
         keyValue[1] = formatValue(itemValue);
-        System.out.println(itemKey);
-        System.out.println(itemValue);
+        System.out.println(keyValue[0] + ":" + keyValue[1]);
         return keyValue;
     }
 
